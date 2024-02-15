@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#btnFilter > button {
+    width: 7rem;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+#btnFilter > button:hover {
+    background-color: #343434;
+    color: white;
+}
