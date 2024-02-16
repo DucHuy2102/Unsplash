@@ -22,6 +22,7 @@ const App = () => {
         e.preventDefault();
         // console.log(searchInput.current.value);
         fetchImage();
+
         setCurrentPage(1);
     };
 
@@ -29,6 +30,7 @@ const App = () => {
     const handleSelection = (selection) => {
         searchInput.current.value = selection;
         fetchImage();
+
         setCurrentPage(1);
     };
 
@@ -96,15 +98,40 @@ const App = () => {
             <Filter handleSelection={handleSelection} />
 
             {/* display images */}
-            <div className='mt-7 grid grid-cols-5 gap-[10px] justify-center items-center'>
+            {/* <div className='mt-7 grid grid-cols-5 gap-3 justify-center items-center p-5'>
                 {images.map((img) => {
                     return (
                         <img
-                            className='w-[200px] h-[200px] justify-self-center items-self-center rounded-[10px] transition-transform duration-[0.5s]'
+                            className='object-cover max-w-[100%] rounded-[10px] transition-transform duration-[0.5s] hover:-translate-y-1.5'
                             src={img.urls.small}
                             alt={img.urls.alt_description}
                             key={img.id}
                         />
+                    );
+                })}
+            </div> */}
+            <div className='grid-container '>
+                {images.map((img) => {
+                    return (
+                        <div key={img.id} className='relative  rounded-lg overflow-hidden w-full aspect-w-1 aspect-h-1'>
+                            {/* image */}
+                            <img
+                                className='imgItem object-cover rounded-lg duration-500 '
+                                src={img.urls.small}
+                                alt={img.urls.alt_description}
+                                key={img.id}
+                            />
+
+                            {/* view more option */}
+                            <div className='absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500 flex justify-center items-end'>
+                                <a
+                                    href={img.links.html}
+                                    className='text-white font-bold text-lg hover:text-gray-700 hover:text-2xl transform transition-transform duration-300 hover:translate-y-[-5px]'
+                                >
+                                    View
+                                </a>
+                            </div>
+                        </div>
                     );
                 })}
             </div>

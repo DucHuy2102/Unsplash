@@ -13,3 +13,14 @@
     background-color: #343434;
     color: white;
 }
+
+.grid-container {
+    /* mt-7 grid grid-cols-5 gap-3 justify-center items-center p-5 */
+    margin-top: 10px;
+    display: grid;
+    grid-column-gap: 1px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
