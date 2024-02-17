@@ -2,7 +2,7 @@ import { FaFacebook, FaGithub } from 'react-icons/fa';
 
 const Footer = () => {
     return (
-        <div className='bg-black text-white mt-2 h-10 w-full flex justify-center items-center'>
+        <div className='bg-black text-white absolute bottom-0 h-10 w-full flex justify-center items-center'>
             <div>
                 <h1 className='text-lg font-serif'>Nguyen Duc Huy</h1>
             </div>

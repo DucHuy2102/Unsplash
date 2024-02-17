@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TiDeleteOutline } from 'react-icons/ti';
-import { Header, Footer, Filter } from './components/routes';
+import { Header, Footer } from './components/routes';
 import axios from 'axios';
 
 const API_URL = 'https://api.unsplash.com/search/photos';
@@ -12,6 +12,7 @@ const App = () => {
     const [search, setSearch] = useState('');
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const [errorMsg, setErrorMsg] = useState('');
 
     // console.log('searchInput:', searchInput.current.value);
     // console.log('searchInput:', search);
@@ -22,7 +23,6 @@ const App = () => {
         e.preventDefault();
         // console.log(searchInput.current.value);
         fetchImage();
-
         setCurrentPage(1);
     };
 
@@ -30,22 +30,27 @@ const App = () => {
     const handleSelection = (selection) => {
         searchInput.current.value = selection;
         fetchImage();
-
         setCurrentPage(1);
     };
+
+    console.log('page:', currentPage);
 
     // fetch API
     const fetchImage = useCallback(async () => {
         try {
-            const { data } = await axios.get(
-                `${API_URL}?query=${
-                    searchInput.current.value
-                }&page=${currentPage}&per_page=${IMAGE_PER_PAGE}&client_id=${import.meta.env.VITE_API_KEY}`
-            );
-            // console.log(data.results);
-            setImages(data.results);
-            setTotalPages(data.total_pages);
+            if (searchInput.current.value) {
+                setErrorMsg('');
+                const { data } = await axios.get(
+                    `${API_URL}?query=${
+                        searchInput.current.value
+                    }&page=${currentPage}&per_page=${IMAGE_PER_PAGE}&client_id=${import.meta.env.VITE_API_KEY}`
+                );
+                // console.log(data.results);
+                setImages(data.results);
+                setTotalPages(data.total_pages);
+            }
         } catch (error) {
+            setErrorMsg('Something goes wrong! Try again later.');
             console.log(error);
         }
     }, [currentPage]);
@@ -59,6 +64,18 @@ const App = () => {
         <div className='min-h-[100vh] flex flex-col justify-center items-center'>
             {/* header */}
             <Header />
+            {/* error message when cannot get image */}
+            {errorMsg && (
+                <p
+                    onClick={() => {
+                        setErrorMsg('');
+                        setSearch('');
+                    }}
+                    className='text-red-600 mt-3 font-bold transition-transform hover:translate-y-0.5 hover:cursor-pointer'
+                >
+                    {errorMsg}
+                </p>
+            )}
 
             {/* content: input and button search image */}
             <div className='mt-5 relative'>
@@ -95,7 +112,18 @@ const App = () => {
             </div>
 
             {/* filter */}
-            <Filter handleSelection={handleSelection} />
+            <div id='btnFilter' className='flex mt-3'>
+                <button onClick={() => handleSelection('wallpapers')}>Wallpapers</button>
+                <button onClick={() => handleSelection('animals')} className='ml-5'>
+                    Animals
+                </button>
+                <button onClick={() => handleSelection('sport')} className='ml-5'>
+                    Sport
+                </button>
+                <button onClick={() => handleSelection('travel')} className='ml-5'>
+                    Travel
+                </button>
+            </div>
 
             {/* display images */}
             {/* <div className='mt-7 grid grid-cols-5 gap-3 justify-center items-center p-5'>
@@ -110,13 +138,13 @@ const App = () => {
                     );
                 })}
             </div> */}
-            <div className='grid-container '>
+            <div className='grid-container mt-7 grid grid-cols-5 gap-3 justify-center items-center p-20'>
                 {images.map((img) => {
                     return (
-                        <div key={img.id} className='relative  rounded-lg overflow-hidden w-full aspect-w-1 aspect-h-1'>
+                        <div key={img.id} className='relative rounded-lg overflow-hidden w-full aspect-w-1 aspect-h-1'>
                             {/* image */}
                             <img
-                                className='imgItem object-cover rounded-lg duration-500 '
+                                className='imgItem object-cover rounded-lg'
                                 src={img.urls.small}
                                 alt={img.urls.alt_description}
                                 key={img.id}
@@ -126,7 +154,7 @@ const App = () => {
                             <div className='absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500 flex justify-center items-end'>
                                 <a
                                     href={img.links.html}
-                                    className='text-white font-bold text-lg hover:text-gray-700 hover:text-2xl transform transition-transform duration-300 hover:translate-y-[-5px]'
+                                    className='text-white font-bold text-lg hover:text-black hover:text-2xl transform transition-transform duration-300 hover:translate-y-[-5px]'
                                 >
                                     View
                                 </a>
@@ -137,7 +165,7 @@ const App = () => {
             </div>
 
             {/* button next & previous */}
-            <div className='mt-5 text-center w-52 flex justify-center space-x-7 mb-3'>
+            <div className='mt-3 text-center w-52 flex justify-center space-x-7 mb-3'>
                 {currentPage > 1 && (
                     <button
                         className='bg-white border border-gray-900 text-black w-20 h-10 rounded-lg font-bold hover:bg-black hover:text-white hover:text-lg'
@@ -157,7 +185,7 @@ const App = () => {
             </div>
 
             {/* footer */}
-            {/* {images && <Footer />} */}
+            {searchInput.current ? <></> : <Footer />}
         </div>
     );
 };
